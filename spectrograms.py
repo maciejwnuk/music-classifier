@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 from maad import sound, util
 from PIL import Image
 import numpy as np
@@ -11,16 +12,9 @@ from config import (
     CATEGORIES
 )
 
-def process_file(in_file: Path, out_dir: Path):
-    """
-    Convert WAV audio file to segmented spectrogram images.
-
-    Keyword arguments:
-    in_file -- path of input file
-    out_dir -- path to output directory
-    """
-    left,  fs_left  = sound.load(in_file, channel = "left", detrend = False)
-    right, fs_right = sound.load(in_file, channel = "right", detrend = False)
+def wav_to_segments(filepath: Path) -> List[Image.Image]:
+    left,  fs_left  = sound.load(filepath, channel = "left", detrend = False)
+    right, fs_right = sound.load(filepath, channel = "right", detrend = False)
 
     if fs_left != fs_right:
         raise Exception(
@@ -49,7 +43,7 @@ def process_file(in_file: Path, out_dir: Path):
     dt = time[1] - time[0]
     frames = int(SEGMENT_DURATION / dt)
 
-    segments = 0
+    images = []
 
     for i in range(0, len(time), frames):
         segment = fft_db[:, i:(i + frames)]
@@ -72,13 +66,9 @@ def process_file(in_file: Path, out_dir: Path):
             resample = Image.Resampling.BILINEAR
         )
 
-        out_path = out_dir / f"{in_file.stem}_seg{segments:03d}.png"
+        images.append(img)
 
-        img.save(out_path)
-
-        segments += 1
-
-    return segments
+    return images
 
 def main():
     SPECTROGRAMS_DIR.mkdir(
@@ -110,7 +100,12 @@ def main():
             files,
             desc = f"Processing: {category}"
         ):
-            segments_count = process_file(path, out_dir)
+            segments = wav_to_segments(path)
+
+            for i, segment in enumerate(segments):
+                out_path = out_dir / f"{path.stem}_seg{i:03d}.png"
+
+                segment.save(out_path)
 
             tracks_processed += 1
             spectrograms_generated += segments_count
