@@ -31,15 +31,11 @@ with torch.no_grad():
 
 model.conv1 = conv
 
-# Freeze all layers to keep basic feature detection intact
-for name, param in model.named_parameters():
-    param.requires_grad = False
-
-# Unfreeze layer4 for new feature detection
-for param in model.layer4.parameters():
-    param.requires_grad = True
-
 model.fc = nn.Linear(
     model.fc.in_features,
     NUM_CLASSES
 )
+
+# Unfreeze all layers
+for param in model.parameters():
+    param.requires_grad = True
