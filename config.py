@@ -6,10 +6,10 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 
 DATA_DIR = BASE_DIR / "data"
+
+AUDIO_DIR = DATA_DIR / "audio"
 SORTED_DIR = DATA_DIR / "sorted"
 SPECTROGRAMS_DIR = DATA_DIR / "spectrograms"
-
-MODELS_DIR = BASE_DIR / "models"
 
 # Classes
 CATEGORIES = [
