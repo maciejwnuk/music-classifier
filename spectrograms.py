@@ -83,8 +83,6 @@ def main():
     )
 
     tracks_processed = 0
-    spectrograms_generated = 0
-
     category_count = { cat: 0 for cat in CATEGORIES }
 
     for category in CATEGORIES:
@@ -114,17 +112,15 @@ def main():
                 segment.save(out_path)
 
             tracks_processed += 1
-            spectrograms_generated += segments_count
 
-            category_count[category] += segments_count
+            category_count[category] += len(segments)
 
-    print("\n--- Summary ---")
-    print(f"Total tracks processed: {tracks_processed}")
-    print(f"Total spectrograms generated: {spectrograms_generated}")
+    print(f"\nTotal tracks processed: {tracks_processed}")
+    print(f"Total spectrograms generated: {sum(category_count.values())}")
     print("Per-category counts:")
 
     for cat, count in category_count.items():
-        print(f"\t{cat}: {count} spectrograms")
+        print(f"- {cat}: {count} spectrograms")
 
 if __name__ == "__main__":
     main()

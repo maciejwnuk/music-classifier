@@ -1,6 +1,16 @@
 """Shared configuration module"""
 
+import torch
 from pathlib import Path
+
+def get_device() -> torch.device:
+    if torch.cuda.is_available():
+        return torch.device("cuda")
+
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+
+    return torch.device("cpu")
 
 # Directories
 BASE_DIR = Path(__file__).resolve().parent
@@ -35,4 +45,4 @@ IMG_SIZE         = (224, 224)          # ResNet Input size
 BATCH_SIZE    = 32                     # Batch size
 NUM_EPOCHS    = 30                     # Number of runs
 LEARNING_RATE = 1e-4                   # Learning rate (loss parameter)
-VAL_SPLIT     = 0.2                    # Fraction of dataset to validate
+TEST_SPLIT    = 0.2                    # Fraction of dataset to validate
