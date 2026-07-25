@@ -99,9 +99,11 @@ def main():
 
         files = list(in_dir.glob("*.wav"))
 
+        print("Processing:")
+
         for path in tqdm(
             files,
-            desc = f"Processing: {category}"
+            desc = f"- {category}"
         ):
             segments = wav_to_segments(path)
 
