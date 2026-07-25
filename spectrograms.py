@@ -57,13 +57,19 @@ def wav_to_segments(filepath: Path) -> List[Image.Image]:
             continue
 
         # Normalize to save image
-        segment = np.flipud(np.clip(
-            (segment + 100.0) * 2.55, 0, 255
-        )).astype(np.uint8)
+        min = np.min(segment)
+        max = np.max(segment)
 
-        img = Image.fromarray(segment).resize(
+        if max - min == 0:
+            continue
+
+        segment = np.flipud(
+            (segment - min) / (max - min) * 255
+        ).astype(np.uint8)
+
+        img = Image.fromarray(segment, "L").resize(
             IMG_SIZE,
-            resample = Image.Resampling.BILINEAR
+            resample = Image.Resampling.LANCZOS
         )
 
         images.append(img)
