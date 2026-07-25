@@ -53,6 +53,31 @@ def get_transform():
         )
     ])
 
+# Augument train dataset with random erasing and jittering
+def get_train_transform():
+    mean = [0.4453]
+    std  = [0.2692]
+
+    return transforms.Compose([
+        transforms.Resize(IMG_SIZE),
+        transforms.Grayscale(num_output_channels = 1),
+        transforms.RandomCrop(
+            IMG_SIZE,
+            padding = 8,
+            padding_mode = "edge"
+        ),
+        transforms.ToTensor(),
+        transforms.RandomErasing(
+            p = 0.5,
+            scale = (0.02, 0.2),
+            value = 0
+        ),
+        transforms.Normalize(
+            mean = mean,
+            std = std
+        )
+    ])
+
 def save_confusion_matrix(cm, labels, path):
     plt.figure(figsize = (10, 8))
 
@@ -90,15 +115,13 @@ def main():
     train_subset = torch.utils.data.Subset(dataset, train_idx)  # pyright: ignore[reportArgumentType]
     test_subset = torch.utils.data.Subset(dataset, test_idx)    # pyright: ignore[reportArgumentType]
 
-    transform = get_transform()
-
     train_dataset = DatasetWrapper(
         train_subset,
-        transform = transform
+        transform = get_train_transform()
     )
     test_dataset = DatasetWrapper(
         test_subset,
-        transform = transform
+        transform = get_transform()
     )
 
     num_workers = min(4, os.cpu_count() or 1)
