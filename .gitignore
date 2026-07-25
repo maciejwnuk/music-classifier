@@ -12,4 +12,6 @@ wheels/
 # Data
 data
 *.wav
+
+# macOS...
 .DS_Store
