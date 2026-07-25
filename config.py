@@ -36,6 +36,7 @@ CATEGORIES = [
 NUM_CLASSES = len(CATEGORIES)
 
 # Hyperparameters
+DYNAMIC_RANGE    = 70                  # Range of dB to cover
 SAMPLE_RATE      = 22050               # Audio target sample rate
 SEGMENT_DURATION = 5.0                 # Audio segment duration in seconds
 FFT_POINTS       = 1024                # FFT resolution

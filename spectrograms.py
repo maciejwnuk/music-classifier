@@ -6,7 +6,7 @@ import numpy as np
 from tqdm import tqdm
 
 from config import (
-    SAMPLE_RATE, FFT_POINTS, FFT_HOP,
+    DYNAMIC_RANGE, SAMPLE_RATE, FFT_POINTS, FFT_HOP,
     SEGMENT_DURATION, IMG_SIZE,
     SPECTROGRAMS_DIR, SORTED_DIR,
     CATEGORIES
@@ -57,14 +57,13 @@ def wav_to_segments(filepath: Path) -> List[Image.Image]:
             continue
 
         # Normalize to save image
-        min = np.min(segment)
         max = np.max(segment)
+        min = max - DYNAMIC_RANGE
 
-        if max - min == 0:
-            continue
+        segment = np.clip(segment, min, max)
 
         segment = np.flipud(
-            (segment - min) / (max - min) * 255
+            (segment - min) / DYNAMIC_RANGE * 255
         ).astype(np.uint8)
 
         img = Image.fromarray(segment, "L").resize(
