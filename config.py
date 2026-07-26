@@ -24,13 +24,9 @@ SPECTROGRAMS_DIR = DATA_DIR / "spectrograms"
 # Classes
 CATEGORIES = [
     "aggressive",
-    "atmospheric",
     "chill",
-    "dark",
     "groovy",
     "hype",
-    "melancholic",
-    "uplifting",
 ]
 
 NUM_CLASSES = len(CATEGORIES)
