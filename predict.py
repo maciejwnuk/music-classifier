@@ -90,9 +90,9 @@ def main():
 
         with torch.no_grad():
             outputs = model(tensors)
-            probs = F.softmax(outputs, dim=1)
+            probs   = F.softmax(outputs, dim = 1)
 
-        avg_probs = probs.mean(dim=0)
+        avg_probs = probs.mean(dim = 0)
 
         top_probs, top_indices = torch.topk(avg_probs, 3)
 
@@ -102,5 +102,5 @@ def main():
         for prob, idx in zip(top_probs, top_indices):
             print(f"{categories[idx]:<12} | {prob.item() * 100:.2f}%")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
