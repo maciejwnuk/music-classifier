@@ -94,12 +94,10 @@ def main():
 
         avg_probs = probs.mean(dim = 0)
 
-        top_probs, top_indices = torch.topk(avg_probs, 3)
-
-        print(f"{'Mood':<12} | {'Confidence'}")
+        print(f"{"Mood":<12} | {"Confidence"}")
         print("-" * 30)
 
-        for prob, idx in zip(top_probs, top_indices):
+        for prob, idx in avg_probs:
             print(f"{categories[idx]:<12} | {prob.item() * 100:.2f}%")
 
 if __name__ == "__main__":
