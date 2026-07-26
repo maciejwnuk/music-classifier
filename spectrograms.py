@@ -80,6 +80,42 @@ def wav_to_segments(filepath: Path) -> List[Image.Image]:
 
     return images
 
+_cache = None
+
+def get_dataset_stats() -> tuple[float, float]:
+    global _cache
+
+    if _cache is not None:
+        return _cache
+
+    ds = datasets.ImageFolder(
+        str(SPECTROGRAMS_DIR),
+        transforms.Compose([
+            transforms.Grayscale(1),
+            transforms.ToTensor()
+        ])
+    )
+
+    loader = torch.utils.data.DataLoader(
+        ds,
+        batch_size = 64,
+        num_workers = 4
+    )
+
+    n = 0
+    mean = 0.
+    var = 0.
+
+    for imgs, _ in loader:
+        mean += imgs.mean()
+        var += imgs.var()
+
+        n += 1
+
+    _cache = (mean / n, np.sqrt(var / n))
+
+    return _cache
+
 def main():
     SPECTROGRAMS_DIR.mkdir(
         parents  = True,

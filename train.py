@@ -13,6 +13,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 import resnet
+from spectrograms import get_dataset_stats
 
 from config import (
     get_device,
@@ -45,9 +46,7 @@ class DatasetWrapper(Dataset):
         return len(self.subset)
 
 def get_transform():
-    # ImageNet means and standard deviations for grayscale
-    mean = [0.4453]
-    std  = [0.2692]
+    mean, std = get_dataset_stats()
 
     return transforms.Compose([
         transforms.Resize(IMG_SIZE),
@@ -61,8 +60,7 @@ def get_transform():
 
 # Augument train dataset with random erasing and jittering
 def get_train_transform():
-    mean = [0.4453]
-    std  = [0.2692]
+    mean, std = get_dataset_stats()
 
     return transforms.Compose([
         transforms.Resize(IMG_SIZE),
