@@ -305,7 +305,7 @@ def main():
 
     cm = confusion_matrix(all_labels, all_preds)
 
-    class_names = checkpoint["classes"].keys()
+    class_names = list(checkpoint["classes"].keys())
 
     for i in range(NUM_CLASSES):
         class_acc = cm[i, i] / cm[i, :].sum() if cm[i, :].sum() > 0 else 0
