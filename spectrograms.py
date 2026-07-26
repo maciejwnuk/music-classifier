@@ -1,8 +1,13 @@
-from pathlib import Path
 from typing import List
-from maad import sound, util
-from PIL import Image
+from pathlib import Path
+
+import torch
 import numpy as np
+from PIL import Image
+from torchvision import datasets, transforms
+
+from maad import sound, util
+
 from tqdm import tqdm
 
 from config import (
@@ -20,7 +25,7 @@ def wav_to_segments(filepath: Path) -> List[Image.Image]:
         raise Exception(
             "Sampling rate differs in left and right channels"
             " "
-            "when processing file: " + str(input)
+            "when processing file: " + str(filepath)
         )
 
     fs = fs_left
@@ -84,6 +89,8 @@ def main():
     tracks_processed = 0
     category_count = { cat: 0 for cat in CATEGORIES }
 
+    print("Processing:")
+
     for category in CATEGORIES:
         in_dir = SORTED_DIR / category
         out_dir = SPECTROGRAMS_DIR / category
@@ -98,8 +105,6 @@ def main():
         )
 
         files = list(in_dir.glob("*.wav"))
-
-        print("Processing:")
 
         for path in tqdm(
             files,
@@ -118,7 +123,7 @@ def main():
 
     print(f"\nTotal tracks processed: {tracks_processed}")
     print(f"Total spectrograms generated: {sum(category_count.values())}")
-    print("Per-category counts:")
+    print("\nPer-category counts:")
 
     for cat, count in category_count.items():
         print(f"- {cat}: {count} spectrograms")
