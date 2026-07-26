@@ -72,15 +72,15 @@ def get_train_transform():
             padding_mode = "edge"
         ),
         transforms.ToTensor(),
+        transforms.Normalize(
+            mean = mean,
+            std = std
+        ),
         transforms.RandomErasing(
             p = 0.5,
             scale = (0.02, 0.2),
             value = 0
         ),
-        transforms.Normalize(
-            mean = mean,
-            std = std
-        )
     ])
 
 def save_confusion_matrix(cm, labels, path):
@@ -215,6 +215,8 @@ def main():
 
             loss = loss_fn(outputs, labels)
             loss.backward()
+
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
 
             optimizer.step()
             scheduler.step()
