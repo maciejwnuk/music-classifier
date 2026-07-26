@@ -112,11 +112,37 @@ def main():
 
     dataset = datasets.ImageFolder(str(SPECTROGRAMS_DIR))
 
-    train_idx, test_idx = train_test_split(
-        np.arange(len(dataset)),
+    songs_target = {}
+
+    for path, target in dataset.samples:
+        name = os.path.basename(path).split("_seg")[0]
+        songs_target[name] = target
+
+    songs = list(songs_target.keys())
+    targets = list(songs_target.values())
+
+    train_songs, test_songs = train_test_split(
+        songs,
         test_size = TEST_SPLIT,
-        stratify = dataset.targets
+        stratify = targets,
+        random_state = 42
     )
+
+    # Using sets to speed up lookup (O(1) set vs O(n) list)
+    train_songs_set = set(train_songs)
+    test_songs_set = set(test_songs)
+
+    train_idx = [
+        i for i, (path, _) in enumerate(dataset.samples)
+        if os.path.basename(path).split("_seg")[0] in train_songs_set
+    ]
+    test_idx = [
+        i for i, (path, _) in enumerate(dataset.samples)
+        if os.path.basename(path).split("_seg")[0] in test_songs_set
+    ]
+
+    print(f"Train songs: {len(train_songs)}")
+    print(f"Test songs:  {len(test_songs)}")
 
     train_subset = torch.utils.data.Subset(dataset, train_idx)  # pyright: ignore[reportArgumentType]
     test_subset = torch.utils.data.Subset(dataset, test_idx)    # pyright: ignore[reportArgumentType]
