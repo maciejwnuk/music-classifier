@@ -31,7 +31,7 @@ with torch.no_grad():
 
 model.conv1 = conv
 
-model.fc = nn.Sequential(
+model.fc = nn.Sequential(                           # pyright: ignore[reportAttributeAccessIssue]
     nn.Dropout(p = 0.3),
     nn.Linear(model.fc.in_features, NUM_CLASSES)
 )

@@ -1,6 +1,5 @@
 import os
 import torch
-import numpy as np
 
 from torch import nn, optim
 from torchvision import transforms, datasets
@@ -26,8 +25,11 @@ from config import (
 # Raise macOS open file descriptors limit
 import resource
 
-soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-resource.setrlimit(resource.RLIMIT_NOFILE, (min(4096, hard), hard))
+_, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+resource.setrlimit(
+    resource.RLIMIT_NOFILE,
+    (min(4096, hard), hard)
+)
 
 class DatasetWrapper(Dataset):
     def __init__(self, subset, transform = None):
@@ -50,7 +52,7 @@ def get_transform():
 
     return transforms.Compose([
         transforms.Resize(IMG_SIZE),
-        transforms.Grayscale(num_output_channels = 1),
+        transforms.Grayscale(1),
         transforms.ToTensor(),
         transforms.Normalize(
             mean = mean,
@@ -58,13 +60,12 @@ def get_transform():
         )
     ])
 
-# Augument train dataset with random erasing and jittering
 def get_train_transform():
     mean, std = get_dataset_stats()
 
     return transforms.Compose([
         transforms.Resize(IMG_SIZE),
-        transforms.Grayscale(num_output_channels = 1),
+        transforms.Grayscale(1),
         transforms.RandomCrop(
             IMG_SIZE,
             padding = 8,
@@ -93,9 +94,7 @@ def save_confusion_matrix(cm, labels, path):
 
     plt.ylabel("True Label")
     plt.xlabel("Predicted Label")
-
     plt.title("Confusion Matrix")
-
     plt.tight_layout()
 
     plt.savefig(path)
