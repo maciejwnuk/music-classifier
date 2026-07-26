@@ -1,14 +1,14 @@
 # Music classifier by mood
 
-Music classifier using a fine-tuned ResNet-18 on mel spectrograms, categorizing tracks into four mood classes.
+Music classifier using a custom convolutional neural network (CNN) on mel spectrograms, categorizing tracks into four mood classes.
 
 ## Description
 
-The pipeline converts WAV audio files into grayscale mel spectrogram images, then trains a ResNet-18 (pretrained on ImageNet) to classify them by mood. Songs are split into fixed-length segments; at inference time, per-segment predictions are averaged to produce a single mood label per track.
+The pipeline converts WAV audio files into grayscale mel spectrogram images, then trains a lightweight 4-block CNN from scratch to classify them by mood. Songs are split into fixed-length segments; at inference time, per-segment predictions are averaged to produce a single mood label per track.
 
 ### Features
 
-- **Mood classes** — `aggressive`, `chill`, `groovy` and `hype`
+- **Mood classes**: `aggressive`, `chill`, `groovy`, `hype`
 - **Spectrogram generation** — configurable FFT resolution, hop size, dynamic range, and segment duration
 - **Song-level train/test split** — segments from the same track never leak across sets
 - **Data augmentation** — time/frequency shifting and SpecAugment-style frequency masking
@@ -87,12 +87,13 @@ All hyperparameters are in [`config.py`](config.py):
 | `DYNAMIC_RANGE` | `70` | Range of dB to cover in spectrograms |
 | `SAMPLE_RATE` | `22050` | Audio target sample rate |
 | `SEGMENT_DURATION` | `5.0` | Segment length in seconds |
-| `FFT_POINTS` | `512` | FFT resolution (window size) |
+| `FFT_POINTS` | `1024` | FFT resolution (window size) |
 | `FFT_HOP` | `256` | FFT hop size |
-| `IMG_SIZE` | `224 × 224` | ResNet input size |
+| `N_MELS` | `128` | Number of Mel frequency bins |
+| `IMG_SIZE` | `224 × 224` | Model input size |
 | `BATCH_SIZE` | `32` | Training batch size |
 | `NUM_EPOCHS` | `30` | Training epochs |
-| `LEARNING_RATE` | `3e-5` | Base learning rate |
+| `LEARNING_RATE` | `1e-3` | Base learning rate |
 | `TEST_SPLIT` | `0.2` | Fraction of songs held out for validation |
 
 ## License
