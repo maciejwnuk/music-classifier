@@ -22,6 +22,12 @@ from config import (
     SPECTROGRAMS_DIR, BASE_DIR,
 )
 
+# Raise macOS open file descriptors limit
+import resource
+
+soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+resource.setrlimit(resource.RLIMIT_NOFILE, (min(4096, hard), hard))
+
 class DatasetWrapper(Dataset):
     def __init__(self, subset, transform = None):
         self.subset = subset
