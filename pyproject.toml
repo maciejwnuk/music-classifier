@@ -9,6 +9,7 @@ dependencies = [
     "scikit-maad>=1.5.2",
     "seaborn>=0.13.2",
     "torch>=2.13.0",
+    "torchaudio>=2.11.0",
     "torchvision>=0.28.0",
     "tqdm>=4.69.1",
 ]

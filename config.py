@@ -35,11 +35,12 @@ NUM_CLASSES = len(CATEGORIES)
 DYNAMIC_RANGE    = 70                  # Range of dB to cover
 SAMPLE_RATE      = 22050               # Audio target sample rate
 SEGMENT_DURATION = 5.0                 # Audio segment duration in seconds
-FFT_POINTS       = 512                 # FFT resolution
+FFT_POINTS       = 1024                # FFT resolution
 FFT_HOP          = 256                 # FFT hop size
-IMG_SIZE         = (224, 224)          # ResNet Input size
+N_MELS           = 128                 # Number of Mel frequency bins
+IMG_SIZE         = (224, 224)          # Model input size
 
 BATCH_SIZE    = 32                     # Batch size
 NUM_EPOCHS    = 50                     # Number of runs
-LEARNING_RATE = 1e-4                   # Learning rate (loss parameter)
+LEARNING_RATE = 1e-3                   # Learning rate (loss parameter)
 TEST_SPLIT    = 0.2                    # Fraction of dataset to validate

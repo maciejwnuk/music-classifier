@@ -1,21 +1,35 @@
 from typing import List
 from pathlib import Path
 
-import torch
 import numpy as np
-from PIL import Image
+
+import torch
+from torchaudio.transforms import MelSpectrogram, AmplitudeToDB
 from torchvision import datasets, transforms
 
-from maad import sound, util
+from PIL import Image
+
+from maad import sound
 
 from tqdm import tqdm
 
 from config import (
-    DYNAMIC_RANGE, SAMPLE_RATE, FFT_POINTS, FFT_HOP,
+    DYNAMIC_RANGE, SAMPLE_RATE,
+    FFT_POINTS, FFT_HOP, N_MELS,
     SEGMENT_DURATION, IMG_SIZE,
     SPECTROGRAMS_DIR, SORTED_DIR,
     CATEGORIES
 )
+
+mel_transform = MelSpectrogram(
+    sample_rate = SAMPLE_RATE,
+    n_fft = FFT_POINTS,
+    hop_length = FFT_HOP,
+    n_mels = N_MELS,
+    power = 2.0
+)
+
+db_transform = AmplitudeToDB()
 
 def wav_to_segments(filepath: Path) -> List[Image.Image]:
     left,  fs_left  = sound.load(filepath, channel = "left", detrend = False)
@@ -37,39 +51,35 @@ def wav_to_segments(filepath: Path) -> List[Image.Image]:
         signal = sound.resample(signal, fs, SAMPLE_RATE)
         fs = SAMPLE_RATE
 
-    fft, time, _freq, _loc = sound.spectrogram(
-        signal, fs,
-        nperseg = FFT_POINTS,
-        noverlap = FFT_POINTS - FFT_HOP
-    )
+    waveform = torch.from_numpy(signal).float()
 
-    fft_db = util.power2dB(fft)
+    spectrogram = mel_transform(waveform)
+    decibels = db_transform(spectrogram)
 
-    dt = time[1] - time[0]
-    frames = int(SEGMENT_DURATION / dt)
+    frames = int(SEGMENT_DURATION * SAMPLE_RATE / FFT_HOP)
 
     images = []
 
-    for i in range(0, len(time), frames):
-        segment = fft_db[:, i:(i + frames)]
+    for i in range(0, decibels.shape[1], frames):
+        segment = decibels[:, i:(i + frames)]
 
         # Discard the segment if it's shorter than SEGMENT_DURATION
         if segment.shape[1] < frames:
             continue
 
         # Discard segments that are mostly silence
-        if np.mean(segment) < -110.0:
+        if torch.mean(segment) < -110.0:
             continue
 
         # Normalize to save image
-        max = np.max(segment)
+        max = torch.max(segment)
         min = max - DYNAMIC_RANGE
 
-        segment = np.clip(segment, min, max)
+        segment = torch.clip(segment, min, max)
 
-        segment = np.flipud(
+        segment = torch.flipud(
             (segment - min) / DYNAMIC_RANGE * 255
-        ).astype(np.uint8)
+        ).numpy().astype(np.uint8)
 
         img = Image.fromarray(segment, "L").resize(
             IMG_SIZE,
