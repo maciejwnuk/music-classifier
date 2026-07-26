@@ -107,10 +107,12 @@ def get_dataset_stats() -> tuple[float, float]:
     var = 0.
 
     for imgs, _ in loader:
-        mean += imgs.mean()
-        var += imgs.var()
+        batch_size = imgs.size(0)
 
-        n += 1
+        mean += imgs.mean() * batch_size
+        var += imgs.var() * batch_size
+
+        n += batch_size
 
     _cache = (mean / n, np.sqrt(var / n))
 
