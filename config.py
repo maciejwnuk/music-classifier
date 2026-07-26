@@ -40,6 +40,6 @@ FFT_HOP          = 256                 # FFT hop size
 IMG_SIZE         = (224, 224)          # ResNet Input size
 
 BATCH_SIZE    = 32                     # Batch size
-NUM_EPOCHS    = 30                     # Number of runs
-LEARNING_RATE = 3e-5                   # Learning rate (loss parameter)
+NUM_EPOCHS    = 50                     # Number of runs
+LEARNING_RATE = 1e-4                   # Learning rate (loss parameter)
 TEST_SPLIT    = 0.2                    # Fraction of dataset to validate
