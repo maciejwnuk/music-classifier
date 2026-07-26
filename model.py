@@ -11,7 +11,7 @@ class AudioCNN(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(p = 0.1)
+            nn.Dropout(p = 0.2)
         )
 
         self.layer2 = nn.Sequential(
@@ -19,7 +19,7 @@ class AudioCNN(nn.Module):
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(p = 0.1)
+            nn.Dropout(p = 0.2)
         )
 
         self.layer3 = nn.Sequential(
@@ -27,7 +27,7 @@ class AudioCNN(nn.Module):
             nn.BatchNorm2d(128),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(p = 0.2)
+            nn.Dropout(p = 0.3)
         )
 
         self.layer4 = nn.Sequential(
@@ -35,7 +35,7 @@ class AudioCNN(nn.Module):
             nn.BatchNorm2d(256),
             nn.ReLU(),
             nn.MaxPool2d(2, 2),
-            nn.Dropout(p = 0.2)
+            nn.Dropout(p = 0.4)
         )
 
         # 7 frequency bands cause MPS doesn't support non-divisible numbers...
@@ -45,7 +45,7 @@ class AudioCNN(nn.Module):
             nn.Flatten(),
             nn.Linear(256 * 7 * 1, 128),
             nn.ReLU(),
-            nn.Dropout(p = 0.3),
+            nn.Dropout(p = 0.5),
             nn.Linear(128, num_classes)
         )
 
