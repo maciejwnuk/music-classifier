@@ -181,7 +181,20 @@ def main():
 
     model = AudioCNN(NUM_CLASSES).to(device)
 
-    loss_fn = nn.CrossEntropyLoss(label_smoothing = 0.1)
+    train_targets = [dataset.targets[i] for i in train_idx]
+
+    class_counts = torch.zeros(NUM_CLASSES)
+
+    for t in train_targets:
+        class_counts[t] += 1
+
+    class_weights = class_counts.sum() / class_counts
+    class_weights = class_weights.to(device)
+
+    loss_fn = nn.CrossEntropyLoss(
+        weight = class_weights,
+        label_smoothing = 0.1
+    )
 
     optimizer = optim.AdamW(
         params = filter(
@@ -192,11 +205,10 @@ def main():
         weight_decay = 1e-2
     )
 
-    scheduler = optim.lr_scheduler.OneCycleLR(
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
-        max_lr = LEARNING_RATE,
-        steps_per_epoch = len(train_loader),
-        epochs = NUM_EPOCHS
+        T_max = NUM_EPOCHS,
+        eta_min = 1e-6
     )
 
     best_acc = 0.0
