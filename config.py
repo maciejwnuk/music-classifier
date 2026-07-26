@@ -35,8 +35,8 @@ NUM_CLASSES = len(CATEGORIES)
 DYNAMIC_RANGE    = 70                  # Range of dB to cover
 SAMPLE_RATE      = 22050               # Audio target sample rate
 SEGMENT_DURATION = 5.0                 # Audio segment duration in seconds
-FFT_POINTS       = 1024                # FFT resolution
-FFT_HOP          = 512                 # FFT hop size
+FFT_POINTS       = 512                 # FFT resolution
+FFT_HOP          = 492                 # FFT hop size
 IMG_SIZE         = (224, 224)          # ResNet Input size
 
 BATCH_SIZE    = 32                     # Batch size
