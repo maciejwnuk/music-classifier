@@ -66,19 +66,27 @@ def get_train_transform():
     return transforms.Compose([
         transforms.Resize(IMG_SIZE),
         transforms.Grayscale(1),
-        transforms.RandomCrop(
-            IMG_SIZE,
-            padding = 8,
-            padding_mode = "edge"
+        transforms.RandomAffine(
+            degrees = 0,
+            translate = (0.1, 0.05),
         ),
         transforms.ToTensor(),
         transforms.Normalize(
             mean = mean,
             std = std
         ),
+        # Add missing patches
         transforms.RandomErasing(
             p = 0.5,
-            scale = (0.02, 0.2),
+            scale = (0.02, 0.33),
+            ratio = (0.3, 3.3),
+            value = 0
+        ),
+        # Add frequency masking
+        transforms.RandomErasing(
+            p = 0.5,
+            scale = (0.02, 0.15),
+            ratio = (5.0, 10.0),
             value = 0
         ),
     ])
