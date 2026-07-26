@@ -31,9 +31,9 @@ with torch.no_grad():
 
 model.conv1 = conv
 
-model.fc = nn.Linear(
-    model.fc.in_features,
-    NUM_CLASSES
+model.fc = nn.Sequential(
+    nn.Dropout(p = 0.3),
+    nn.Linear(model.fc.in_features, NUM_CLASSES)
 )
 
 # Unfreeze all layers
