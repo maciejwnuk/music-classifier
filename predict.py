@@ -9,7 +9,7 @@ from torch.nn import functional as F
 
 from config import get_device, BASE_DIR, CATEGORIES
 
-import resnet
+from model import AudioCNN
 
 from train import get_transform
 from spectrograms import wav_to_segments
@@ -66,7 +66,7 @@ def main():
     else:
         categories = CATEGORIES
 
-    model = resnet.model
+    model = AudioCNN(len(categories))
 
     if isinstance(checkpoint, dict) and "model_state" in checkpoint:
         model.load_state_dict(checkpoint["model_state"])

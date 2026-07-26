@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-import resnet
+from model import AudioCNN
 from spectrograms import get_dataset_stats
 
 from config import (
@@ -179,7 +179,7 @@ def main():
     print(f"Train dataset size: {len(train_dataset)}")
     print(f"Test dataset size:  {len(test_dataset)}")
 
-    model = resnet.model.to(device)
+    model = AudioCNN(NUM_CLASSES).to(device)
 
     loss_fn = nn.CrossEntropyLoss(label_smoothing = 0.1)
 
@@ -194,7 +194,7 @@ def main():
 
     scheduler = optim.lr_scheduler.OneCycleLR(
         optimizer,
-        max_lr = LEARNING_RATE * 10,
+        max_lr = LEARNING_RATE,
         steps_per_epoch = len(train_loader),
         epochs = NUM_EPOCHS
     )
