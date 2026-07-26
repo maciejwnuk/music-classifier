@@ -31,11 +31,18 @@ with torch.no_grad():
 
 model.conv1 = conv
 
-model.fc = nn.Sequential(                           # pyright: ignore[reportAttributeAccessIssue]
-    nn.Dropout(p = 0.3),
-    nn.Linear(model.fc.in_features, NUM_CLASSES)
-)
-
-# Unfreeze all layers
+# Freeze all layers
 for param in model.parameters():
+    param.requires_grad = False
+
+# Unfreeze layer4 and fc
+for param in model.layer4.parameters():
     param.requires_grad = True
+
+model.fc = nn.Sequential(                           # pyright: ignore[reportAttributeAccessIssue]
+    nn.Dropout(p = 0.5),
+    nn.Linear(model.fc.in_features, 128),
+    nn.ReLU(),
+    nn.Dropout(p = 0.3),
+    nn.Linear(128, NUM_CLASSES)
+)
