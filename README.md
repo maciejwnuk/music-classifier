@@ -16,9 +16,9 @@ The pipeline converts WAV audio files into grayscale mel spectrogram images, the
 
 ### Pipeline
 
-```
-WAV files → spectrograms.py → PNG spectrograms → train.py → model.pt → predict.py → mood label
-```
+- WAV files → spectrograms.py → PNG spectrograms
+- PNG spectrograms → train.py → model.pt
+- model.pt → predict.py → mood label
 
 ## Setup
 
